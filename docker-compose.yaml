@@ -1,32 +1,29 @@
-version: '3.8'
-
+version: "3"
 services:
-
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
   backend:
-    build: ./backend
-    container_name: backend
-    environment:
-      - MONGO_URL=mongodb://mongodb:27017/dd_db
+    image: mean-backend:latest
     ports:
-      - "8080:8080"
+      - "5000:5000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/dd_db
     depends_on:
-      - mongodb
+      - mongo
 
   frontend:
-    build: ./frontend
-    container_name: frontend
+    image: mean-frontend:latest
     ports:
-      - "80:80"
+      - "8081:80"
+    environment:
+      - API_URL=http://18.221.88.158/api/tutorials
     depends_on:
       - backend
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
 
 volumes:
   mongo-data:
